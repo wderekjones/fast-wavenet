@@ -10,7 +10,9 @@ def normalize(data):
 
 
 def make_batch(path):
-    data = wavfile.read(path)[1][:, 0]
+    #data = wavfile.read(path)[1][:, 0]
+
+    sr, data = wavfile.read(path)
 
     data_ = normalize(data)
     # data_f = np.sign(data_) * (np.log(1 + 255*np.abs(data_)) / np.log(1 + 255))

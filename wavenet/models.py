@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from layers import (_causal_linear, _output_linear, conv1d,
@@ -70,19 +69,21 @@ class Model(object):
             feed_dict=feed_dict)
         return cost
 
-    def train(self, inputs, targets):
+    def train(self, inputs, targets,epsilon):
         losses = []
         terminal = False
         i = 0
+	epoch_losses = []
         while not terminal:
             i += 1
             cost = self._train(inputs, targets)
-            if cost < 1e-1:
+            if cost < epsilon:
                 terminal = True
             losses.append(cost)
+            epoch_losses.append(cost)
             if i % 50 == 0:
-                plt.plot(losses)
-                plt.show()
+                print "epoch: "+str(i)+"  "+"Loss: "+str(np.mean(epoch_losses))
+		epoch_losses = []
 
 
 class Generator(object):
@@ -147,11 +148,6 @@ class Generator(object):
 
             if step % 1000 == 0:
                 predictions_ = np.concatenate(predictions, axis=1)
-                plt.plot(predictions_[0, :], label='pred')
-                plt.legend()
-                plt.xlabel('samples from start')
-                plt.ylabel('signal')
-                plt.show()
 
         predictions_ = np.concatenate(predictions, axis=1)
         return predictions_
